@@ -74,7 +74,7 @@ const MessageInput = ({ onSendMessage }: { onSendMessage: (data: any) => void })
   }, []);
 
   return (
-    <div className="relative bg-gray-800 p-4 flex items-center">
+    <div className="relative bg-gray-800 p-4 flex items-center w-full">
       <button
         className={`text-white mr-2 transition-transform duration-300 ${showMediaOptions ? 'rotate-45' : ''}`}
         style={{ color: showMediaOptions ? 'red' : '#32CD32' }}
@@ -87,7 +87,7 @@ const MessageInput = ({ onSendMessage }: { onSendMessage: (data: any) => void })
         <input
           type="text"
           placeholder="Type a message"
-          className="flex-1 p-2 rounded-l bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="flex-1 p-2 rounded-l bg-gray-700 text-white border  border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onFocus={() => setShowMediaOptions(false)}
@@ -95,12 +95,14 @@ const MessageInput = ({ onSendMessage }: { onSendMessage: (data: any) => void })
       )}
 
       {!showPoll && (
-        <MicRecorder
+      <div className="ml-2">
+          <MicRecorder
           audioUrl={audioUrl}
           setAudioUrl={setAudioUrl}
           onStartRecording={handleStartRecording}
           onStopRecording={handleStopRecording}
         />
+      </div>
       )}
 
       {!isRecording && !showPoll && (
@@ -116,26 +118,26 @@ const MessageInput = ({ onSendMessage }: { onSendMessage: (data: any) => void })
               <FaCamera className="mr-2 text-blue-400" /> Camera
             </button>
             <label className="flex items-center p-2 hover:bg-gray-600 cursor-pointer">
-  <FaImage className="mr-2 text-pink-400" />
-  <input
-    type="file"
-    accept="image/*,video/*" // Accept both image and video files
-    className="hidden"
-    onChange={(e) => {
-      const file = e.target.files?.[0];
-      if (file) {
-        const fileUrl = URL.createObjectURL(file); // Create a URL for the file
-        if (file.type.startsWith('image/')) {
-          onSendMessage({ image: fileUrl }); // Pass the URL if it's an image
-        } else if (file.type.startsWith('video/')) {
-          onSendMessage({ video: fileUrl }); // Pass the URL if it's a video
-        }
-        setShowMediaOptions(false);
-      }
-    }}
-  />
-  Image/Video
-</label>
+              <FaImage className="mr-2 text-pink-400" />
+              <input
+                type="file"
+                accept="image/*,video/*" // Accept both image and video files
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const fileUrl = URL.createObjectURL(file); // Create a URL for the file
+                    if (file.type.startsWith('image/')) {
+                      onSendMessage({ image: fileUrl }); // Pass the URL if it's an image
+                    } else if (file.type.startsWith('video/')) {
+                      onSendMessage({ video: fileUrl }); // Pass the URL if it's a video
+                    }
+                    setShowMediaOptions(false);
+                  }
+                }}
+              />
+              Image/Video
+            </label>
             <label className="flex items-center p-2 hover:bg-gray-600 cursor-pointer">
               <FaFileAlt className="mr-2 text-yellow-400" />
               <input
