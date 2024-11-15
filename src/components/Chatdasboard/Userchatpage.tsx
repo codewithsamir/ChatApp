@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaEllipsisV } from 'react-icons/fa';
 import MessageInput from './Messageinput';
-import Poll from './Poll';
+import Pollmessage from './Pollmessage';
 
 const ChatPage = ({ selectedUser }: any) => {
   const [showChatMenu, setShowChatMenu] = useState(false);
@@ -28,13 +28,7 @@ const ChatPage = ({ selectedUser }: any) => {
     handleSendMessage({ poll: { question, selectedOption } });
   };
 
-  interface Message {
-    text: string;
-    from: string;
-    time: string;
-  }
-
-  const exampleMessages: Message[] = [
+  const exampleMessages = [
     { text: "Hello! How's it going?", from: "otherUser", time: new Date().toLocaleTimeString() },
     { text: "Are you ready for the meeting?", from: "otherUser", time: new Date().toLocaleTimeString() },
   ];
@@ -68,23 +62,11 @@ const ChatPage = ({ selectedUser }: any) => {
           {msg.image && <img src={msg.image} alt="User upload" className="mt-2 w-[350px] h-[300px] object-cover rounded" />}
           {msg.video && <video controls src={msg.video} className="mt-2 max-w-full rounded" />}
           {msg.poll && (
-            <div className="w-[500px] p-2 rounded-lg">
-              <h4 className="text-xl font-bold">Poll: {msg.poll.question}</h4>
-              <div className="mt-2">
-                {msg.poll.options.map((option: any, idx: any) => (
-                  <label key={option} className="flex items-center mb-1">
-                    <input
-                      type="radio"
-                      name={`poll-${msg.poll.question}`}
-                      value={option}
-                      className="mr-2 h-5 w-5"
-                      onChange={() => handlePollVote({ question: msg.poll.question, selectedOption: option })}
-                    />
-                    {option}
-                  </label>
-                ))}
-              </div>
-            </div>
+            <Pollmessage
+              msg={msg.poll}
+              pollResults={pollResults}
+              handlePollVote={handlePollVote}
+            />
           )}
           <p className="text-xs text-gray-300 mt-1">{msg.time}</p>
         </div>
@@ -125,12 +107,8 @@ const ChatPage = ({ selectedUser }: any) => {
         {otherUserMessages.slice().reverse().map((msg: any, index: any) => renderMessage(msg, false))}
       </div>
 
-
-
       {/* Message Input */}
       <MessageInput onSendMessage={handleSendMessage} />
-
- 
     </div>
   );
 };
