@@ -50,7 +50,7 @@ const ChatLayout = () => {
             onClick={() => setShowProfileCard(!showProfileCard)} // Toggle profile card visibility
           >
             <img
-              src="https://i.pravatar.cc/150?img=1" // Replace with the actual profile image URL
+              src="https://images.unsplash.com/photo-1480455624313-e29b44bbfde1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8bWFufGVufDB8fDB8fHww" // Replace with the actual profile image URL
               alt="Profile"
               className="w-10 h-10 rounded-full object-cover mb-1" // Circular image
             />
@@ -64,11 +64,7 @@ const ChatLayout = () => {
           <div className="absolute bottom-10 right-[-270px] z-10 ">
   <ProfileCard
   
-    name="User 1"
-    email="user1@example.com"
-    image="https://i.pravatar.cc/150?img=1"
-    status="Hey there! I'm using WhatsApp"
-    lastSeen="Last seen 10 minutes ago"
+    
     onClose={() => setShowProfileCard(false)} // Close profile card
   />
   </div>

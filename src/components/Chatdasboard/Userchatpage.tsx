@@ -16,21 +16,35 @@ type ChatPageProps = {
 const ChatPage: React.FC<ChatPageProps> = ({ selectedUser }) => {
   const [showChatMenu, setShowChatMenu] = useState(false);
   const [myMessages, setMyMessages] = useState<any[]>([]); // Messages from the current user
-  const [otherUserMessages, setOtherUserMessages] = useState<any[]>([]); // Messages from the selected user
+  const [otherUserMessages, setOtherUserMessages] = useState<any[]>([
+    // Default messages from the other user
+    { text: "Hey there! How's it going?", from: 'other', time: '10:30 AM' },
+    { text: "Just working on a project. What about you?", from: 'other', time: '10:32 AM' }
+  ]);
   const [isPollVisible, setIsPollVisible] = useState(false);
   const [pollResults, setPollResults] = useState<any>({});
   const [audioUrl, setAudioUrl] = useState('');
   const chatMenuRef = useRef<HTMLDivElement | null>(null);
+
   // Send a new text or poll message
   const handleSendMessage = (messageData: any) => {
     const messageWithSender = { ...messageData, from: 'me', time: new Date().toLocaleTimeString() };
     setMyMessages((prevMessages) => [...prevMessages, messageWithSender]);
 
-    // For demo, simulate receiving a message from the other user
+    // Simulate a different response for the other user instead of mirroring the content
     if (messageData.text) {
+      const randomResponses = [
+        "That's interesting!",
+        "Could you tell me more?",
+        "I didn't know that!",
+        "Wow, really?",
+        "Sounds good to me."
+      ];
+      const randomIndex = Math.floor(Math.random() * randomResponses.length);
+
       setOtherUserMessages((prevMessages) => [
         ...prevMessages,
-        { text: `Reply to: ${messageData.text}`, from: 'other', time: new Date().toLocaleTimeString() },
+        { text: randomResponses[randomIndex], from: 'other', time: new Date().toLocaleTimeString() }
       ]);
     }
 
@@ -38,26 +52,25 @@ const ChatPage: React.FC<ChatPageProps> = ({ selectedUser }) => {
     if (audioUrl) {
       setOtherUserMessages((prevMessages) => [
         ...prevMessages,
-        { audio: audioUrl, from: 'other', time: new Date().toLocaleTimeString() },
+        { audio: audioUrl, from: 'other', time: new Date().toLocaleTimeString() }
       ]);
       setAudioUrl(''); // Clear the audio URL after sending
     }
   };
 
+  // Handle click outside to close chat menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (chatMenuRef.current && !chatMenuRef.current.contains(event.target as Node)) {
+        setShowChatMenu(false);  // Close menu if clicked outside
+      }
+    };
 
-    // Handle click outside to close chat menu
-    useEffect(() => {
-      const handleClickOutside = (event: MouseEvent) => {
-        if (chatMenuRef.current && !chatMenuRef.current.contains(event.target as Node)) {
-          setShowChatMenu(false);  // Close menu if clicked outside
-        }
-      };
-  
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    }, []);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Update poll results without sending a new message
   const handlePollVote = ({ question, selectedOption }: { question: string; selectedOption: string }) => {
@@ -120,11 +133,10 @@ const ChatPage: React.FC<ChatPageProps> = ({ selectedUser }) => {
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-2 w-full">
-         {/* Display messages from the other user */}
-         {otherUserMessages.map((msg, index) => renderMessage(msg, false))}
+        {/* Display messages from the other user */}
+        {otherUserMessages.map((msg, index) => renderMessage(msg, false))}
         {/* Display messages from current user */}
         {myMessages.map((msg, index) => renderMessage(msg, true))}
-       
       </div>
 
       {isPollVisible && <Poll onSubmit={handlePollSubmit} setShowPoll={setIsPollVisible} />}
